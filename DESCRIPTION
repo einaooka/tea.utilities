@@ -1,0 +1,9 @@
+Package: tea.utilities
+Type: Package
+Title: Utility Functions 
+Version: 0.1
+Date: 2015-11-24
+Authors@R: person("Eina", "Ooka", email = "eooka@teainc.org", role = c("aut", "cre"))
+Description: Various utility functions that does not fit in other tea. packackes.
+License: The Energy Authority
+LazyData: TRUE
