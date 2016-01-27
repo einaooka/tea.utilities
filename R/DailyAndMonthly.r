@@ -63,9 +63,6 @@ ConvertMonthlyToDaily <- function(df, type="step"){
     n_l <- nrow(df)
     n <- nrow(return.df)
     
-    # preliminary series
-    p <- rep(1, n)
-    
     # variance-covariance matrix for addtive Denton
     D <- diag(n)
     diag(D[2:n, 1:(n - 1)]) <- -1
@@ -84,7 +81,7 @@ ConvertMonthlyToDaily <- function(df, type="step"){
     D <- Q %*% t(C) %*% solve(C %*% Q %*% t(C))
     
     # Reconcile results
-    for (i in 2:nvars) return.df[,i] <- p + D %*% (df[,i] - C %*% p) 
+    return.df[,-1] <- D %*% as.matrix(df)
     
   } else if (type == "smooth.naive"){
     
