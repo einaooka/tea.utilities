@@ -81,7 +81,7 @@ ConvertMonthlyToDaily <- function(df, type="step"){
     D <- Q %*% t(C) %*% solve(C %*% Q %*% t(C))
     
     # Reconcile results
-    return.df[,-1] <- D %*% as.matrix(df)
+    return.df[,-1] <- D %*% as.matrix(df[,-1])
     
   } else if (type == "smooth.naive"){
     
