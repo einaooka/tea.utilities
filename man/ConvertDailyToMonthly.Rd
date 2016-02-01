@@ -7,23 +7,32 @@
 \usage{
 ConvertDailyToMonthly(df)
 
-ConvertMonthlyToDaily(df, type = "step")
+ConvertMonthlyToDaily(df, type = "step", indicator.df = NULL)
 }
 \arguments{
 \item{df}{A data frame to be converted. The first column needs to be a date column.}
 
-\item{type}{Smoothing type for monthly-to-daily conversion. c("step", "smooth"). Default set at "step."}
+\item{type}{Smoothing type for monthly-to-daily conversion. c("step", "smooth", "smooth.naive). Default set at "step."}
+
+\item{indicator.df}{An optional input for denton disaggregation. It should be a data frame with "Date" as the first column,
+and the same number of columns as df, in a daily granularity.}
 }
 \description{
 ConvertDailyToMonthly takes a daily table and convert it to a monthly table with values equal to the mean.
-Conversely, ConvertMonthlyToDaily takes a monthly table and convert it to a daily table, either as a step function or
-pricewise-defined 2nd-degree polynomials.
+Conversely, ConvertMonthlyToDaily takes a monthly table and convert it to a daily table.
+}
+\details{
+When 'step' is chosen for disaggregation method, data is simply extrapolated as constants through the months.
+For 'smooth' disaggregation, the default setting is by denton method. If naive smoothing is chosen, piece-wise deinfed 2nd degree
+polynomial method is used.
 }
 \section{Functions}{
 \itemize{
 \item \code{ConvertMonthlyToDaily}: Take a monthly data frame and convert it to daily data frame.
 }}
 \examples{
+library(reshape)
+library(tea.eo.plots)
 niter <- 2
 monthly.df <- data.frame("Date"=rep(seq(as.Date("2010-1-1"), by="month", length.out = 12),niter)
 , "Iter" = rep(1:niter,each=12), "Y"=rnorm(12*niter))
@@ -35,6 +44,10 @@ daily.df <- ConvertMonthlyToDaily(monthly.df)
 matlines(daily.df$Date, daily.df[,-1], lty=2)
 
 daily.df <- ConvertMonthlyToDaily(monthly.df, type="smooth")
+matlines(daily.df$Date, daily.df[,-1])
+
+daily.df <- ConvertMonthlyToDaily(monthly.df, type="smooth"
+, indicator.df = data.frame("Date"=seq(as.Date("2010-1-1"), by="day", length.out = 400), rnorm(400, sd=0.5), rnorm(400, sd=0.5)))
 matlines(daily.df$Date, daily.df[,-1])
 
 verify.df <- ConvertDailyToMonthly(daily.df)

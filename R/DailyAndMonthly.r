@@ -6,6 +6,8 @@
 #'
 #' @param df A data frame to be converted. The first column needs to be a date column.
 #' @param type Smoothing type for monthly-to-daily conversion. c("step", "smooth", "smooth.naive). Default set at "step."
+#' @param indicator.df An optional input for denton disaggregation. It should be a data frame with "Date" as the first column, 
+#' and the same number of columns as df, in a daily granularity.    
 #' 
 #' @details When 'step' is chosen for disaggregation method, data is simply extrapolated as constants through the months.
 #' For 'smooth' disaggregation, the default setting is by denton method. If naive smoothing is chosen, piece-wise deinfed 2nd degree 
