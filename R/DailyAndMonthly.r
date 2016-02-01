@@ -88,7 +88,11 @@ ConvertMonthlyToDaily <- function(df, type="step", indicator.df = NULL){
     
     # preliminary series
     if (is.null(indicator.df)) {p <- matrix(0, nrow=n, ncol=nvars-1)
-    } else { p <- as.matrix(indicator.df[match(return.df$Date, indicator.df$Date),-1])}
+    } else { 
+      p <- as.matrix(indicator.df[match(return.df$Date, indicator.df$Date), -1])
+      p <- na.locf(p, na.rm = FALSE)
+      p[nrow(p):1,] <- na.locf(p[nrow(p):1,], na.rm = FALSE)
+      }
     
     # Reconcile results
     return.df[,-1] <- p + D %*% (as.matrix(df[,-1])-C %*% p)
