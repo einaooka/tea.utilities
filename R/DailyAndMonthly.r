@@ -31,6 +31,10 @@
 #'
 #' daily.df <- ConvertMonthlyToDaily(monthly.df, type="smooth")
 #' matlines(daily.df$Date, daily.df[,-1])
+#' 
+#' daily.df <- ConvertMonthlyToDaily(monthly.df, type="smooth"
+#' , indicator.df = data.frame("Date"=seq(as.Date("2010-1-1"), by="day", length.out = 400), rnorm(400, sd=0.5), rnorm(400, sd=0.5)))
+#' matlines(daily.df$Date, daily.df[,-1])
 #'
 #' verify.df <- ConvertDailyToMonthly(daily.df)
 #' matlines(verify.df$Date, verify.df[,-1], lwd=10, lty=1, col=gray.f(0.3))
@@ -44,7 +48,7 @@ ConvertDailyToMonthly <- function(df){
 }
 
 #' @describeIn ConvertDailyToMonthly Take a monthly data frame and convert it to daily data frame.
-ConvertMonthlyToDaily <- function(df, type="step"){
+ConvertMonthlyToDaily <- function(df, type="step", indicator.df = NULL){
 
   nvars <- ncol(df)
   if (ncol(df) ==2) df$temp <- 1
@@ -80,8 +84,12 @@ ConvertMonthlyToDaily <- function(df, type="step"){
     # Distribution matrix
     D <- Q %*% t(C) %*% solve(C %*% Q %*% t(C))
     
+    # preliminary series
+    if (is.null(indicator.df)) {p <- matrix(0, nrow=n, ncol=nvars-1)
+    } else { p <- as.matrix(indicator.df[match(return.df$Date, indicator.df$Date),-1])}
+    
     # Reconcile results
-    return.df[,-1] <- D %*% as.matrix(df[,-1])
+    return.df[,-1] <- p + D %*% (as.matrix(df[,-1])-C %*% p)
     
   } else if (type == "smooth.naive"){
     
