@@ -44,7 +44,7 @@ ImportFromZema <- function(profile.name, profile.owner, timestep = "", destfile 
     writeLines(data,destfile)
     data.df <- read.csv(destfile, stringsAsFactors=FALSE)
   } else {
-    setInternet2(use = TRUE)
+    setInternet2(use = NA)
     download.file(zema.url,destfile)
     data.df<-read.csv(destfile, stringsAsFactors=FALSE)
   }
